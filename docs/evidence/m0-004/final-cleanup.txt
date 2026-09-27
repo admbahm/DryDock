@@ -1,0 +1,16 @@
+Untagged: drydock-qualification:m0-004
+Deleted: sha256:662a6c48ef3bab9ee4969be7fc1507c763a19bd91c900cfd93db6ff61698311c
+Untagged: drydock-qualification:m0-004-behavior
+Deleted: sha256:c93dd948b465f2ba26fd1c9f37c540c310424dd07fb74459f50354bf3e6c76f8
+active
+Id=docker.service
+LoadState=masked
+ActiveState=inactive
+
+Id=docker.socket
+LoadState=masked
+ActiveState=inactive
+
+Id=containerd.service
+LoadState=masked
+ActiveState=inactive

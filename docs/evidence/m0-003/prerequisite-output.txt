@@ -1,0 +1,31 @@
+drydock-exec
+Linux 6.8.0-142-generic x86_64
+containerd.io	2.3.6-1~ubuntu.24.04~noble
+docker-ce	5:29.8.1-1~ubuntu.24.04~noble
+docker-ce-cli	5:29.8.1-1~ubuntu.24.04~noble
+docker-ce-rootless-extras	5:29.8.1-1~ubuntu.24.04~noble
+libslirp0:amd64	4.7.0-1ubuntu3.1
+slirp4netns	1.2.1-1build2
+Id=docker.service
+LoadState=masked
+ActiveState=inactive
+
+Id=docker.socket
+LoadState=masked
+ActiveState=inactive
+
+Id=containerd.service
+LoadState=masked
+ActiveState=inactive
+Linger=yes
+inactive
+[ERROR] Missing system requirements. Run the following commands to
+[ERROR] install the requirements and run this tool again.
+[ERROR] Alternatively iptables checks can be disabled with --skip-iptables .
+
+########## BEGIN ##########
+sudo sh -eux <<EOF
+# Load nf_tables module
+modprobe nf_tables
+EOF
+########## END ##########

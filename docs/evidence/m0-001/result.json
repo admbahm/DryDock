@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "campaign_id": "m0-001",
+  "recorded_at": "2026-09-27T13:14:07.789030+00:00",
+  "status": "INCONCLUSIVE",
+  "stage": "host_access_prerequisite",
+  "target": "drydock-exec",
+  "command": "ssh -o BatchMode=yes -o ForwardAgent=no -o StrictHostKeyChecking=yes -o ConnectTimeout=10 adam@drydock-exec 'hostname; uname -srm; cat /etc/os-release; id -u; id -un; command -v docker; sudo -n true'",
+  "attempts": [
+    {
+      "local_network_sandbox": true,
+      "exit_code": 255,
+      "stderr": "ssh: Could not resolve hostname drydock-exec: nodename nor servname provided, or not known"
+    },
+    {
+      "local_network_sandbox": false,
+      "exit_code": 255,
+      "stderr": "ssh: Could not resolve hostname drydock-exec: nodename nor servname provided, or not known"
+    }
+  ],
+  "remote_commands_executed": false,
+  "remote_changes_made": false,
+  "runtime_version": null,
+  "image_digest": null,
+  "qualified_profile": null,
+  "isolation_probes_run": false,
+  "qualification_granted": false,
+  "cleanup": "No remote resources created; no remote cleanup required.",
+  "limitation": "Host access failed before runtime observation. This is not a Docker isolation failure or pass.",
+  "next_required_input": "Resolvable execution-host address or an explicit SSH route from this workspace."
+}

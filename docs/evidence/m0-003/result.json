@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "campaign_id": "m0-003",
+  "recorded_at": "2026-09-27T13:47:49.100149+00:00",
+  "status": "INCONCLUSIVE",
+  "stage": "rootless_setup_prerequisite",
+  "command": "ssh -o BatchMode=yes -o ForwardAgent=no -o StrictHostKeyChecking=yes -o ConnectTimeout=10 adam@192.168.50.99 'hostname; uname -srm; dpkg-query -W docker-ce docker-ce-cli docker-ce-rootless-extras containerd.io slirp4netns libslirp0; systemctl show docker.service docker.socket containerd.service -p Id -p LoadState -p ActiveState; loginctl show-user adam -p Linger; systemctl --user is-active dbus.service; test -e /home/adam/.config/docker/daemon.json && printf \"EXISTING_DAEMON_CONFIG\\n\"; test -e /home/adam/.config/systemd/user/docker.service && printf \"EXISTING_USER_SERVICE\\n\"; dockerd-rootless-setuptool.sh check'",
+  "exit_code": 1,
+  "output_artifact": "prerequisite-output.txt",
+  "output_normalization": "Terminal ANSI color escapes removed; combined stdout/stderr retained as tool returned it.",
+  "observed": {
+    "hostname": "drydock-exec",
+    "kernel": "6.8.0-142-generic",
+    "architecture": "x86_64",
+    "docker_packages": "5:29.8.1-1~ubuntu.24.04~noble",
+    "containerd_package": "2.3.6-1~ubuntu.24.04~noble",
+    "rootful_units": "masked/inactive",
+    "linger": true,
+    "user_dbus": "inactive",
+    "setup_check": "Reports missing nf_tables module prerequisite; requests modprobe nf_tables."
+  },
+  "qualification_granted": false,
+  "isolation_probes_run": false,
+  "qualified_profile": null,
+  "image_digest": null,
+  "daemon_version_observed": null,
+  "remote_configuration_changes_by_campaign": false,
+  "cleanup": "No daemon configured or containers created; no campaign resources to clean up. Normal SSH audit records may exist.",
+  "limitation": "The setup tool diagnostic was observed. Kernel module state was not independently inspected; no isolation property was demonstrated.",
+  "next_dependency": "Operator review and manual privileged remediation of the reported prerequisite; do not bypass iptables checks."
+}

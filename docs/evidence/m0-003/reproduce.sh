@@ -1,0 +1,3 @@
+#!/bin/sh
+# Prerequisite check only. Does not execute suggested remediation commands.
+exec ssh -o BatchMode=yes -o ForwardAgent=no -o StrictHostKeyChecking=yes -o ConnectTimeout=10 adam@192.168.50.99 'hostname; uname -srm; dpkg-query -W docker-ce docker-ce-cli docker-ce-rootless-extras containerd.io slirp4netns libslirp0; systemctl show docker.service docker.socket containerd.service -p Id -p LoadState -p ActiveState; loginctl show-user adam -p Linger; systemctl --user is-active dbus.service; test -e /home/adam/.config/docker/daemon.json && printf "EXISTING_DAEMON_CONFIG\n"; test -e /home/adam/.config/systemd/user/docker.service && printf "EXISTING_USER_SERVICE\n"; dockerd-rootless-setuptool.sh check'

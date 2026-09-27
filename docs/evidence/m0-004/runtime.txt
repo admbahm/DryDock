@@ -1,0 +1,33 @@
+{"Client":{"Platform":{"Name":"Docker Engine - Community"},"Version":"29.8.1","ApiVersion":"1.56","DefaultAPIVersion":"1.56","GitCommit":"4a63305","GoVersion":"go1.26.8","Os":"linux","Arch":"amd64","BuildTime":"Tue Sep 15 16:26:01 2026","Context":"default"},"Server":{"Platform":{"Name":"Docker Engine - Community"},"Version":"29.8.1","ApiVersion":"1.56","MinAPIVersion":"1.40","Os":"linux","Arch":"amd64","Components":[{"Name":"Engine","Version":"29.8.1","Details":{"ApiVersion":"1.56","Arch":"amd64","BuildTime":"Tue Sep 15 16:26:01 2026","Experimental":"false","GitCommit":"464cd50","GoVersion":"go1.26.8","KernelVersion":"6.8.0-142-generic","MinAPIVersion":"1.40","Module":"github.com/moby/moby/v2","ModuleVersion":"v2.0.0+unknown","Os":"linux"}},{"Name":"containerd","Version":"v2.3.6","Details":{"GitCommit":"ee2735368117d2eb259779949d5e75cdafec9761"}},{"Name":"runc","Version":"1.5.1","Details":{"GitCommit":"v1.5.1-0-g8f2685a4"}},{"Name":"docker-init","Version":"0.19.0","Details":{"GitCommit":"de40ad0"}},{"Name":"rootlesskit","Version":"3.1.0","Details":{"ApiVersion":"1.1.2","NetworkDriver":"slirp4netns","PortDriver":"builtin","StateDir":"/run/user/1000/dockerd-rootless"}},{"Name":"slirp4netns","Version":"1.2.1","Details":{"GitCommit":"09e31e92fa3d2a1d3ca261adaeb012c8d75a8194"}}],"GitCommit":"464cd50","GoVersion":"go1.26.8","KernelVersion":"6.8.0-142-generic","BuildTime":"2026-09-15T16:26:01.000000000+00:00"}}
+Linux 6.8.0-142-generic x86_64
+systemd 255 (255.4-1ubuntu8.17)
++PAM +AUDIT +SELINUX +APPARMOR +IMA +SMACK +SECCOMP +GCRYPT -GNUTLS +OPENSSL +ACL +BLKID +CURL +ELFUTILS +FIDO2 +IDN2 -IDN +IPTC +KMOD +LIBCRYPTSETUP +LIBFDISK +PCRE2 -PWQUALITY +P11KIT +QRENCODE +TPM2 +BZIP2 +LZ4 +XZ +ZLIB +ZSTD -BPF_FRAMEWORK -XKBCOMMON +UTMP +SYSVINIT default-hierarchy=unified
+{"log-driver":"none","live-restore":false}
+# /home/adam/.config/systemd/user/docker.service
+[Unit]
+Description=Docker Application Container Engine (Rootless)
+Documentation=https://docs.docker.com/go/rootless/
+Requires=dbus.socket
+
+[Service]
+Environment=PATH=/usr/bin:/sbin:/usr/sbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+ExecStart=/usr/bin/dockerd-rootless.sh 
+ExecReload=/bin/kill -s HUP $MAINPID
+TimeoutSec=0
+RestartSec=2
+Restart=always
+StartLimitBurst=3
+StartLimitInterval=60s
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+TasksMax=infinity
+Delegate=yes
+Type=notify
+NotifyAccess=all
+KillMode=mixed
+
+[Install]
+WantedBy=default.target
+1660 adam UNKNOWN
+/usr/bin/python3

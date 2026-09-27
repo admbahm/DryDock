@@ -1,0 +1,7 @@
+Go 1.24.5 darwin/arm64
+Linux/amd64 static probe cross-build: passed
+GOOS=linux GOARCH=amd64 go vet ./tools/m0probe: passed
+go test ./...: passed (existing CLI/sandbox tests)
+go vet ./...: passed
+Python unittest: 3 evaluator tests passed
+These checks do not establish qualification runner correctness or runtime isolation.

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "campaign_id": "m0-004",
+  "recorded_at": "2026-09-27T14:00:10.606135+00:00",
+  "status": "INCONCLUSIVE",
+  "qualified": false,
+  "stop_property": "bounded_output_and_termination",
+  "observed_reason": "Docker stop exceeded ten-second command deadline during output flood; initial forced removal also timed out.",
+  "root_cause": "unknown; synchronous stop without concurrent output draining is a plausible harness defect",
+  "cleanup": "No campaign containers or Docker job cgroups observed afterward; campaign images removed; approved daemon and synthetic evidence retained.",
+  "image_digest": "sha256:c93dd948b465f2ba26fd1c9f37c540c310424dd07fb74459f50354bf3e6c76f8",
+  "behavior_results": "behavior/result.json",
+  "m1_started": false
+}

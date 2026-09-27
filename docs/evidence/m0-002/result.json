@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "campaign_id": "m0-002",
+  "recorded_at": "2026-09-27T13:21:59.038158+00:00",
+  "status": "INCONCLUSIVE",
+  "stage": "installation_privilege_prerequisite",
+  "command": "ssh -o BatchMode=yes -o ForwardAgent=no -o StrictHostKeyChecking=yes -o ConnectTimeout=10 adam@192.168.50.99 'hostname; uname -srm; cat /etc/os-release; id -u; id -un; command -v docker; sudo -n true'",
+  "attempts": [
+    {
+      "local_network_sandbox": true,
+      "exit_code": 255,
+      "stderr": "ssh: connect to host 192.168.50.99 port 22: Operation not permitted"
+    },
+    {
+      "local_network_sandbox": false,
+      "exit_code": 1,
+      "stdout_artifact": "ssh.stdout.txt",
+      "stderr_artifact": "ssh.stderr.txt"
+    }
+  ],
+  "observed": {
+    "hostname": "drydock-exec",
+    "kernel": "6.8.0-142-generic",
+    "architecture": "x86_64",
+    "os": "Ubuntu 24.04.5 LTS",
+    "uid": 1000,
+    "user": "adam",
+    "docker_path_output": null,
+    "noninteractive_sudo_available": false
+  },
+  "runtime_version": null,
+  "image_digest": null,
+  "qualified_profile": null,
+  "qualification_granted": false,
+  "isolation_probes_run": false,
+  "remote_changes_made_by_campaign": false,
+  "cleanup": "No campaign runtime resources created; no cleanup required. SSH/sudo may produce normal host audit records.",
+  "limitation": "SSH succeeded; installation privilege unavailable without interactive authentication. This does not demonstrate a runtime isolation failure or pass.",
+  "next_dependency": "Operator-provisioned noninteractive installation access, or operator-performed privileged installation/configuration; no passwords should be shared."
+}

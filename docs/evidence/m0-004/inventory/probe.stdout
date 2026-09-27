@@ -1,0 +1,84 @@
+{
+  "/proc/net/ipv6_route": "00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo\n00000000000000000000000000000001 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000002 00000000 80200001       lo\n00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo\n",
+  "/proc/net/route": "Iface\tDestination\tGateway \tFlags\tRefCnt\tUse\tMetric\tMask\t\tMTU\tWindow\tIRTT                                                       \n",
+  "/proc/self/cgroup": "0::/\n",
+  "/proc/self/mountinfo": "512 417 0:50 / / ro,relatime - overlay overlay rw,lowerdir=/home/adam/.local/share/docker/containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/3/fs:/home/adam/.local/share/docker/containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/2/fs,upperdir=/home/adam/.local/share/docker/containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/4/fs,workdir=/home/adam/.local/share/docker/containerd/daemon/io.containerd.snapshotter.v1.overlayfs/snapshots/4/work,redirect_dir=nofollow,userxattr\n514 512 0:58 / /proc rw,nosuid,nodev,noexec,relatime - proc proc rw\n515 512 0:59 / /dev rw,nosuid - tmpfs tmpfs rw,size=65536k,mode=755,uid=1000,gid=1000,inode64\n516 515 0:60 / /dev/pts rw,nosuid,noexec,relatime - devpts devpts rw,gid=100004,mode=620,ptmxmode=666\n517 512 0:61 / /sys ro,nosuid,nodev,noexec,relatime - sysfs sysfs ro\n518 517 0:29 / /sys/fs/cgroup ro,nosuid,nodev,noexec,relatime - cgroup2 cgroup rw,nsdelegate,memory_recursiveprot\n519 515 0:56 / /dev/mqueue rw,nosuid,nodev,noexec,relatime - mqueue mqueue rw\n520 515 0:62 / /dev/shm rw,nosuid,nodev,noexec,relatime - tmpfs shm rw,size=8192k,uid=1000,gid=1000,inode64\n521 512 0:63 / /tmp rw,nosuid,nodev,noexec,relatime - tmpfs tmpfs rw,size=16384k,uid=1000,gid=1000,inode64\n522 512 0:64 / /workspace rw,nosuid,nodev,noexec,relatime - tmpfs tmpfs rw,size=65536k,mode=700,uid=165531,gid=165531,inode64\n523 512 252:0 /home/adam/.local/share/docker/containers/25a8bf1c8a9e71d2da022dbb4ee7186546988c950d26093f870e5d82adb7069a/hostname /etc/hostname ro,relatime - ext4 /dev/mapper/ubuntu--vg-ubuntu--lv rw\n524 512 252:0 /home/adam/.local/share/docker/containers/25a8bf1c8a9e71d2da022dbb4ee7186546988c950d26093f870e5d82adb7069a/hosts /etc/hosts ro,relatime - ext4 /dev/mapper/ubuntu--vg-ubuntu--lv rw\n525 512 252:0 /home/adam/.local/share/docker/containers/25a8bf1c8a9e71d2da022dbb4ee7186546988c950d26093f870e5d82adb7069a/resolv.conf /etc/resolv.conf ro,relatime - ext4 /dev/mapper/ubuntu--vg-ubuntu--lv rw\n526 515 0:5 /null /dev/null rw,nosuid,relatime master:2 - devtmpfs udev rw,size=4024036k,nr_inodes=1006009,mode=755,inode64\n527 515 0:5 /random /dev/random rw,nosuid,relatime master:2 - devtmpfs udev rw,size=4024036k,nr_inodes=1006009,mode=755,inode64\n528 515 0:5 /full /dev/full rw,nosuid,relatime master:2 - devtmpfs udev rw,size=4024036k,nr_inodes=1006009,mode=755,inode64\n529 515 0:5 /tty /dev/tty rw,nosuid,relatime master:2 - devtmpfs udev rw,size=4024036k,nr_inodes=1006009,mode=755,inode64\n530 515 0:5 /zero /dev/zero rw,nosuid,relatime master:2 - devtmpfs udev rw,size=4024036k,nr_inodes=1006009,mode=755,inode64\n531 515 0:5 /urandom /dev/urandom rw,nosuid,relatime master:2 - devtmpfs udev rw,size=4024036k,nr_inodes=1006009,mode=755,inode64\n418 514 0:58 /bus /proc/bus ro,nosuid,nodev,noexec,relatime - proc proc rw\n419 514 0:58 /fs /proc/fs ro,nosuid,nodev,noexec,relatime - proc proc rw\n424 514 0:58 /irq /proc/irq ro,nosuid,nodev,noexec,relatime - proc proc rw\n425 514 0:58 /sys /proc/sys ro,nosuid,nodev,noexec,relatime - proc proc rw\n426 514 0:58 /sysrq-trigger /proc/sysrq-trigger ro,nosuid,nodev,noexec,relatime - proc proc rw\n427 514 0:65 / /proc/acpi ro,relatime - tmpfs tmpfs ro,size=4k,nr_inodes=1,uid=1000,gid=1000,inode64\n428 514 0:65 / /proc/asound ro,relatime - tmpfs tmpfs ro,size=4k,nr_inodes=1,uid=1000,gid=1000,inode64\n429 514 0:5 /null /proc/interrupts rw,nosuid,relatime master:2 - devtmpfs udev rw,size=4024036k,nr_inodes=1006009,mode=755,inode64\n430 514 0:5 /null /proc/kcore rw,nosuid,relatime master:2 - devtmpfs udev rw,size=4024036k,nr_inodes=1006009,mode=755,inode64\n431 514 0:5 /null /proc/keys rw,nosuid,relatime master:2 - devtmpfs udev rw,size=4024036k,nr_inodes=1006009,mode=755,inode64\n432 514 0:5 /null /proc/latency_stats rw,nosuid,relatime master:2 - devtmpfs udev rw,size=4024036k,nr_inodes=1006009,mode=755,inode64\n433 514 0:65 / /proc/scsi ro,relatime - tmpfs tmpfs ro,size=4k,nr_inodes=1,uid=1000,gid=1000,inode64\n486 514 0:5 /null /proc/timer_list rw,nosuid,relatime master:2 - devtmpfs udev rw,size=4024036k,nr_inodes=1006009,mode=755,inode64\n487 517 0:65 / /sys/firmware ro,relatime - tmpfs tmpfs ro,size=4k,nr_inodes=1,uid=1000,gid=1000,inode64\n",
+  "/proc/self/status": "Name:\tprobe\nUmask:\t0022\nState:\tR (running)\nTgid:\t1\nNgid:\t0\nPid:\t1\nPPid:\t0\nTracerPid:\t0\nUid:\t65532\t65532\t65532\t65532\nGid:\t65532\t65532\t65532\t65532\nFDSize:\t64\nGroups:\t65532 \nNStgid:\t1\nNSpid:\t1\nNSpgid:\t1\nNSsid:\t1\nKthread:\t0\nVmPeak:\t 1225808 kB\nVmSize:\t 1225808 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t    2200 kB\nVmRSS:\t    2200 kB\nRssAnon:\t     520 kB\nRssFile:\t    1680 kB\nRssShmem:\t       0 kB\nVmData:\t   39200 kB\nVmStk:\t     132 kB\nVmExe:\t     776 kB\nVmLib:\t       8 kB\nVmPTE:\t      80 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t5\nSigQ:\t0/31437\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000000000000\nSigCgt:\tfffffffd7fc1feff\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t0000000000000000\nCapAmb:\t0000000000000000\nNoNewPrivs:\t1\nSeccomp:\t2\nSeccomp_filters:\t1\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\tf\nCpus_allowed_list:\t0-3\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t22\nnonvoluntary_ctxt_switches:\t5\nx86_Thread_features:\t\nx86_Thread_features_locked:\t\n",
+  "/sys/fs/cgroup/cpu.max": "50000 100000\n",
+  "/sys/fs/cgroup/memory.max": "268435456\n",
+  "/sys/fs/cgroup/memory.swap.max": "0\n",
+  "/sys/fs/cgroup/pids.max": "64\n",
+  "/tmp/positive-control": "write succeeded",
+  "/workspace/positive-control": "write succeeded",
+  "environment": [
+    "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "HOSTNAME=25a8bf1c8a9e",
+    "HOME=/"
+  ],
+  "filesystems": [
+    {
+      "path": "/",
+      "total_bytes": 51460472832,
+      "available_bytes": 41116467200,
+      "total_inodes": 3211264,
+      "flags": 4129
+    },
+    {
+      "path": "/workspace",
+      "total_bytes": 67108864,
+      "available_bytes": 67108864,
+      "total_inodes": 1016469,
+      "flags": 4142
+    },
+    {
+      "path": "/tmp",
+      "total_bytes": 16777216,
+      "available_bytes": 16777216,
+      "total_inodes": 1016469,
+      "flags": 4142
+    },
+    {
+      "path": "/dev",
+      "total_bytes": 67108864,
+      "available_bytes": 67108864,
+      "total_inodes": 1016469,
+      "flags": 34
+    },
+    {
+      "path": "/dev/shm",
+      "total_bytes": 8388608,
+      "available_bytes": 8388608,
+      "total_inodes": 1016469,
+      "flags": 4142
+    },
+    {
+      "path": "/etc/hosts",
+      "total_bytes": 51460472832,
+      "available_bytes": 41116467200,
+      "total_inodes": 3211264,
+      "flags": 4129
+    },
+    {
+      "path": "/etc/hostname",
+      "total_bytes": 51460472832,
+      "available_bytes": 41116467200,
+      "total_inodes": 3211264,
+      "flags": 4129
+    },
+    {
+      "path": "/etc/resolv.conf",
+      "total_bytes": 51460472832,
+      "available_bytes": 41116467200,
+      "total_inodes": 3211264,
+      "flags": 4129
+    }
+  ],
+  "gid": 65532,
+  "probe": "profile-inventory",
+  "runtime_file_write_access": {
+    "/etc/hostname": "open /etc/hostname: permission denied",
+    "/etc/hosts": "open /etc/hosts: permission denied",
+    "/etc/resolv.conf": "open /etc/resolv.conf: permission denied"
+  },
+  "uid": 65532
+}

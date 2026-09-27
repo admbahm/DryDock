@@ -1,0 +1,26 @@
+{
+  "campaign": "m0-004",
+  "status": "INCONCLUSIVE",
+  "qualified": false,
+  "image": "sha256:662a6c48ef3bab9ee4969be7fc1507c763a19bd91c900cfd93db6ff61698311c",
+  "checks": [
+    {
+      "name": "requested_profile",
+      "status": "PASS"
+    },
+    {
+      "name": "effective_cgroup_values",
+      "status": "PASS"
+    },
+    {
+      "name": "job_identity_and_security_status",
+      "status": "PASS"
+    },
+    {
+      "name": "runtime_files_not_writable_and_scoped_write_controls",
+      "status": "PASS"
+    }
+  ],
+  "reason": "Inventory gate completed; behavioral isolation probes still required.",
+  "cleanup": "container removed"
+}

@@ -1,0 +1,6 @@
+{
+  "command": "GOCACHE=/tmp/drydock-go-cache GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -trimpath -o bin/m0probe ./tools/m0probe",
+  "go_version": "go1.24.5 darwin/arm64",
+  "binary_sha256": "eab7ad58a352472ca297d9093196914025739061140e23f2d0cf7519bc776978",
+  "image_tar_sha256": "63b7ba4b042b14d96a157fb8def77040e2af0c427f0b1098da849b9166e8515b"
+}
