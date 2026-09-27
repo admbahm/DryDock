@@ -1,0 +1,343 @@
+{
+  "kind": "issue-2 regression; not an M0 qualification campaign",
+  "qualified": false,
+  "m0_campaign": false,
+  "run_id": "e11f05eb2c0c",
+  "image_requested": "sha256:5352933279766818665a3da1d03550db8daf9c1f71e9ca96eec185cd2fae4cf6",
+  "rootfs_sha256": "b183f6b35e8a8655faa93a032633d47a9b3920a6425afcb661a1012e6e7cdea1",
+  "probe_sha256": "7076129c12fed9b2078179b20639ec385683c36f05700293a8ec55b5c653105f",
+  "docker_commands": [
+    {
+      "argv": [
+        "docker",
+        "--host",
+        "unix:///run/user/1000/docker.sock",
+        "version",
+        "--format",
+        "{{json .}}"
+      ],
+      "exit_status": 0,
+      "duration_seconds": 0.022017178998794407,
+      "stdout_bytes": 1428,
+      "stderr_bytes": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "--host",
+        "unix:///run/user/1000/docker.sock",
+        "image",
+        "inspect",
+        "sha256:5352933279766818665a3da1d03550db8daf9c1f71e9ca96eec185cd2fae4cf6"
+      ],
+      "exit_status": 0,
+      "duration_seconds": 0.028816999001719523,
+      "stdout_bytes": 858,
+      "stderr_bytes": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "--host",
+        "unix:///run/user/1000/docker.sock",
+        "create",
+        "--name",
+        "drydock-issue2-e11f05eb2c0c-output",
+        "--label",
+        "drydock.investigation=issue-2",
+        "--pull",
+        "never",
+        "--network",
+        "none",
+        "--read-only",
+        "--user",
+        "65532:65532",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges=true",
+        "--cgroupns",
+        "private",
+        "--ipc",
+        "private",
+        "--pids-limit",
+        "64",
+        "--cpus",
+        "0.5",
+        "--memory",
+        "256m",
+        "--memory-swap",
+        "256m",
+        "--shm-size",
+        "8m",
+        "--ulimit",
+        "nofile=256:256",
+        "--ulimit",
+        "core=0:0",
+        "--restart",
+        "no",
+        "--log-driver",
+        "none",
+        "--tmpfs",
+        "/workspace:rw,nosuid,nodev,size=64m,mode=0700,uid=65532,gid=65532",
+        "--tmpfs",
+        "/tmp:rw,noexec,nosuid,nodev,size=16m,mode=1777",
+        "--workdir",
+        "/workspace",
+        "--entrypoint",
+        "/probe",
+        "--label",
+        "drydock.issue2.run=e11f05eb2c0c",
+        "sha256:5352933279766818665a3da1d03550db8daf9c1f71e9ca96eec185cd2fae4cf6",
+        "output"
+      ],
+      "exit_status": 0,
+      "duration_seconds": 0.050981532000150764,
+      "stdout_bytes": 65,
+      "stderr_bytes": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "--host",
+        "unix:///run/user/1000/docker.sock",
+        "inspect",
+        "drydock-issue2-e11f05eb2c0c-output"
+      ],
+      "exit_status": 0,
+      "duration_seconds": 0.015933580001728842,
+      "stdout_bytes": 6603,
+      "stderr_bytes": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "--host",
+        "unix:///run/user/1000/docker.sock",
+        "inspect",
+        "--format",
+        "{{.State.Pid}}",
+        "drydock-issue2-e11f05eb2c0c-output"
+      ],
+      "exit_status": 0,
+      "duration_seconds": 0.01527572199847782,
+      "stdout_bytes": 2,
+      "stderr_bytes": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "--host",
+        "unix:///run/user/1000/docker.sock",
+        "inspect",
+        "drydock-issue2-e11f05eb2c0c-output"
+      ],
+      "exit_status": 0,
+      "duration_seconds": 0.0160200159989472,
+      "stdout_bytes": 7032,
+      "stderr_bytes": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "--host",
+        "unix:///run/user/1000/docker.sock",
+        "ps",
+        "-aq",
+        "--no-trunc",
+        "--filter",
+        "label=drydock.issue2.run=e11f05eb2c0c"
+      ],
+      "exit_status": 0,
+      "duration_seconds": 0.01580878099775873,
+      "stdout_bytes": 65,
+      "stderr_bytes": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "--host",
+        "unix:///run/user/1000/docker.sock",
+        "rm",
+        "--force",
+        "79b03053e0115fdf2987f3f9e06de74f8121e712319b74dddb6dccaca35e6ce0"
+      ],
+      "exit_status": 0,
+      "duration_seconds": 0.030931269997381605,
+      "stdout_bytes": 65,
+      "stderr_bytes": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "--host",
+        "unix:///run/user/1000/docker.sock",
+        "ps",
+        "-aq",
+        "--no-trunc",
+        "--filter",
+        "label=drydock.issue2.run=e11f05eb2c0c"
+      ],
+      "exit_status": 0,
+      "duration_seconds": 0.015545586000371259,
+      "stdout_bytes": 0,
+      "stderr_bytes": 0
+    }
+  ],
+  "runtime": {
+    "Client": {
+      "Platform": {
+        "Name": "Docker Engine - Community"
+      },
+      "Version": "29.8.1",
+      "ApiVersion": "1.56",
+      "DefaultAPIVersion": "1.56",
+      "GitCommit": "4a63305",
+      "GoVersion": "go1.26.8",
+      "Os": "linux",
+      "Arch": "amd64",
+      "BuildTime": "Tue Sep 15 16:26:01 2026",
+      "Context": "default"
+    },
+    "Server": {
+      "Platform": {
+        "Name": "Docker Engine - Community"
+      },
+      "Version": "29.8.1",
+      "ApiVersion": "1.56",
+      "MinAPIVersion": "1.40",
+      "Os": "linux",
+      "Arch": "amd64",
+      "Components": [
+        {
+          "Name": "Engine",
+          "Version": "29.8.1",
+          "Details": {
+            "ApiVersion": "1.56",
+            "Arch": "amd64",
+            "BuildTime": "Tue Sep 15 16:26:01 2026",
+            "Experimental": "false",
+            "GitCommit": "464cd50",
+            "GoVersion": "go1.26.8",
+            "KernelVersion": "6.8.0-142-generic",
+            "MinAPIVersion": "1.40",
+            "Module": "github.com/moby/moby/v2",
+            "ModuleVersion": "v2.0.0+unknown",
+            "Os": "linux"
+          }
+        },
+        {
+          "Name": "containerd",
+          "Version": "v2.3.6",
+          "Details": {
+            "GitCommit": "ee2735368117d2eb259779949d5e75cdafec9761"
+          }
+        },
+        {
+          "Name": "runc",
+          "Version": "1.5.1",
+          "Details": {
+            "GitCommit": "v1.5.1-0-g8f2685a4"
+          }
+        },
+        {
+          "Name": "docker-init",
+          "Version": "0.19.0",
+          "Details": {
+            "GitCommit": "de40ad0"
+          }
+        },
+        {
+          "Name": "rootlesskit",
+          "Version": "3.1.0",
+          "Details": {
+            "ApiVersion": "1.1.2",
+            "NetworkDriver": "slirp4netns",
+            "PortDriver": "builtin",
+            "StateDir": "/run/user/1000/dockerd-rootless"
+          }
+        },
+        {
+          "Name": "slirp4netns",
+          "Version": "1.2.1",
+          "Details": {
+            "GitCommit": "09e31e92fa3d2a1d3ca261adaeb012c8d75a8194"
+          }
+        }
+      ],
+      "GitCommit": "464cd50",
+      "GoVersion": "go1.26.8",
+      "KernelVersion": "6.8.0-142-generic",
+      "BuildTime": "2026-09-15T16:26:01.000000000+00:00"
+    }
+  },
+  "image_id_observed": "sha256:5352933279766818665a3da1d03550db8daf9c1f71e9ca96eec185cd2fae4cf6",
+  "regression": {
+    "name": "drydock-issue2-e11f05eb2c0c-output",
+    "container_create_attempted": true,
+    "stop_deadline_seconds": 10,
+    "output_limit_bytes": 1048576,
+    "container_id": "79b03053e0115fdf2987f3f9e06de74f8121e712319b74dddb6dccaca35e6ce0",
+    "image_id": "sha256:5352933279766818665a3da1d03550db8daf9c1f71e9ca96eec185cd2fae4cf6",
+    "probe_pid": 0,
+    "exit_code": 2,
+    "state": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 2,
+      "Error": "",
+      "StartedAt": "2026-09-27T18:08:03.310446787Z",
+      "FinishedAt": "2026-09-27T18:08:03.418710939Z"
+    },
+    "duration_seconds": 0.3052913930005161,
+    "termination_reason": "output_limit",
+    "termination_seconds": 0.11578376599936746,
+    "stop_exit_code": 0,
+    "output_bytes_seen": 8388608,
+    "retained_bytes": 1048576,
+    "truncated": true,
+    "retained_limit_respected": true,
+    "cgroup_path": "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/user.slice/docker-79b03053e0115fdf2987f3f9e06de74f8121e712319b74dddb6dccaca35e6ce0.scope",
+    "docker_commands": [
+      [
+        "docker",
+        "--host",
+        "unix:///run/user/1000/docker.sock",
+        "start",
+        "--attach",
+        "drydock-issue2-e11f05eb2c0c-output"
+      ],
+      [
+        "docker",
+        "--host",
+        "unix:///run/user/1000/docker.sock",
+        "stop",
+        "--time",
+        "2",
+        "drydock-issue2-e11f05eb2c0c-output"
+      ]
+    ],
+    "passed": true,
+    "cleanup_container_ids": [
+      "79b03053e0115fdf2987f3f9e06de74f8121e712319b74dddb6dccaca35e6ce0"
+    ],
+    "job_cgroups_before_cleanup": {
+      "79b03053e0115fdf2987f3f9e06de74f8121e712319b74dddb6dccaca35e6ce0": []
+    },
+    "cleanup_remove_succeeded": true,
+    "remaining_job_cgroups": {
+      "79b03053e0115fdf2987f3f9e06de74f8121e712319b74dddb6dccaca35e6ce0": []
+    },
+    "probe_cgroup_after_cleanup": {
+      "observable": false
+    },
+    "remaining_run_containers": [],
+    "cleanup_verified": true
+  },
+  "status": "PASS"
+}

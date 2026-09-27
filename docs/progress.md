@@ -185,5 +185,55 @@ evidence-integrity checks are complete. Final diff review and commit
 `2867b40` (`fix: prevent output backpressure during probe termination`) are
 complete. Branch `fix/1-output-backpressure` was pushed and verified at
 `1c56111a04b014ea151fed153a8f64cf2f224f2c`. PR [#6](https://github.com/admbahm/DryDock/pull/6)
-is open against `main`, closes #1, and references #2 without closing it. The
-next consequential action is human review; no merge or approval was performed.
+was merged into `main` after independent review.
+
+## Issue #2: output-flood cancellation regressions — review correction
+
+PR #7 was opened at `0270c4e` against `e2115d6`. Independent review found
+blocking gaps in stop-process-group coverage, exception cleanup/diagnostic
+retention, and Docker cgroup cleanup verification. The original completion
+claim was too strong; Issue #2 remains open.
+
+The original run `e11f05eb2c0c` and its JSON hash remain unchanged. It supports
+bounded output and stop completion, but full cleanup is INCONCLUSIVE because
+the runner accepted unobservable cgroups. Remote transfer/file/image cleanup
+claims lack supporting command records in the preserved artifact. See the
+[attributed correction](investigations/issue-2/REVIEW-CORRECTION.md).
+
+Local repairs share the production drain/attach path, protect client cleanup on
+exceptions, persist bounded failure diagnostics, require positive cgroup
+observability, and test a real stop descendant before fallback cleanup. These
+changes have no new Docker execution evidence. A separately authorized bounded
+regression with a new identity is still needed; Issue #3 is not included.
+
+Historical specimens remain immutable. m0-004 is INCONCLUSIVE; M0 is UNQUALIFIED;
+M1 is NOT STARTED. No qualification campaign or M1 work occurred.
+
+### Authorized bounded rerun: 86a56976e3cf
+
+Result INCONCLUSIVE before output consumption: target scope was found but live
+membership validation failed. No bounded-stop result is claimed. Exact source,
+transfer/hash checks, runtime observations, image verification and cleanup records
+are in [the run record](investigations/issue-2/run-86a56976e3cf/README.md).
+The container, exact scope, imported image and temporary files were subsequently
+verified absent. No retry or qualification campaign followed. The cause of the
+membership observation remains unknown; startup timing is only a hypothesis.
+
+### Authorized bounded rerun: e8a097595a56
+
+PASS for this regression only: 8 MiB read, 1 MiB retained, truncation true, stop
+exit zero in 0.118 seconds. The target scope was positively observed populated
+with PID 11977, then explicitly absent after cleanup; no run-labelled containers
+remained. Transfer checks, input/image verification and image/file/result cleanup
+are preserved in [the run record](investigations/issue-2/run-e8a097595a56/README.md).
+Exact executed sources match the local repaired runner/helper. This does not
+retroactively change 86a56976e3cf, qualify M0 or authorize Issue #3/M1. Changes
+remain uncommitted/unpushed, pending human review and publication authorization.
+
+### Authorized publication of the review fixes
+
+The owner authorized committing and pushing the repaired sources, local tests,
+correction records and both new bounded-run records to the existing Issue #2
+branch/PR #7. The four pre-existing Issue #1 investigation artifacts are excluded.
+Human review and any merge remain separate; no issue closure or qualification
+claim is authorized. Verify PR head against the resulting commit when resuming.

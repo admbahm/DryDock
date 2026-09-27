@@ -1,109 +1,79 @@
 # Current handoff
 
-## State
+## State and authority
 
-Current milestone: M0. Runtime **UNQUALIFIED**; M1 **NOT STARTED**. Do not run
-m0-005, begin M1, or start another qualification campaign. The current branch is
-`fix/1-output-backpressure`, based on published `main` at
-`fe26751691fe502c33b22ebd864296ade542dc38`. The Issue #1 implementation commit
-is `2867b40` (`fix: prevent output backpressure during probe termination`).
-Before this handoff-only update, PR [#6](https://github.com/admbahm/DryDock/pull/6)
-was open against `main` with verified head
-`1c56111a04b014ea151fed153a8f64cf2f224f2c`. Verify the latest PR/branch SHA
-with Git before any further work.
-The working tree is not clean because four provenance-unverified artifacts are
-preserved and unstaged; inspect `git status` before continuing.
+M0 runtime **UNQUALIFIED**; M1 **NOT STARTED**. Do not run m0-005, Issue #3, or
+any qualification campaign. The owner authorized local fixes and then a new bounded Issue #2 Docker
+regression. The owner subsequently authorized committing and pushing these
+fixes/evidence to update PR #7. Merge remains unauthorized. After an initial automatic-review transfer block, the owner explicitly approved
+the four exact payloads/destination. The first bounded attempt completed INCONCLUSIVE. After local readiness repairs,
+the owner explicitly authorized another attempt, e8a097595a56, which passed. Both
+attempts are closed and all scoped remote resources/files have been cleaned up.
 
-## Last completed action
+Branch: `test/2-output-cancellation-regressions`. Before this publication, remote head was
+`0270c4e493eb6f9aaae029a09272f577473e4d23`; base/main is
+`e2115d6b8dd6e953d94d1631641671bfccdaf64f`. PR #7 exists:
+https://github.com/admbahm/DryDock/pull/7
+This handoff accompanies the fix/evidence commit following that head. Resolve
+`git log -1` and compare origin/PR head when resuming; do not infer publication
+from this file alone.
 
-Reproduced the output/stop behavior in two corrected bounded Docker A/B
-diagnostics, established the harness-level root cause, and implemented the
-smallest corresponding live-tool fix in `tools/m0probe/behavior.py`. Added a
-deterministic local child/grandchild output-flood regression. Current focused
-Python suite: 5 tests pass. `go test ./...`, `go vet ./...`, native CLI build,
-Linux/amd64 probe cross-build, Linux-targeted vet, Python compilation, and all
-four historical evidence manifests also pass. Go checks used
-`/private/tmp/drydock-issue1-go-cache` because the default cache was outside the
-write sandbox. Investigation details, commands, report hashes, and limits are
-in `docs/investigations/issue-1/README.md`.
+## Local changes
 
-Corrected diagnostic reports:
+- Shared production attach/drain helper owns client cleanup from launch through
+  selector setup, observation and exception paths. The Docker runner imports it.
+- Failure output and partial diagnostic state are retained. Stop/default limits
+  remain ten seconds and 1 MiB combined. Case deadline remains 42 seconds.
+- Stop-process-group test establishes a live descendant and checks its death
+  before fallback cleanup. Production worker-cleanup tests do the same for a
+  synthetic parent and child on case timeout and non-zero stop failure.
+- Cgroup evidence must identify a live full-ID scope and explicitly observe that
+  same scope absent after cleanup. Unobservable/permission failures, remaining
+  empty scopes and removal errors cannot pass. The runner records source hashes.
+- Corrected the production caller's string/Path mismatch without running it
+  against Docker. Removed copied drain code and misleading failure tests.
+- Added `docs/investigations/issue-2/REVIEW-CORRECTION.md`. Original run JSON is
+  unchanged. Its cleanup evidence remains INCONCLUSIVE; the new successful
+  run is recorded below. Issue #2 remains open for review.
 
-- Run 02, `7bc8cac7bcce`, report SHA-256
-  `041289005e629519a8e0d10bdc13ef5b3afce3a82fc8ba963b1ceebb2cc71f4e`.
-- Run 03, `1d57f990b4db`, report SHA-256
-  `30c70d070d73ce3d02647eb3b20402afee5a59044262a8bdc021076399d6de43`.
-- Run 03 runner SHA-256
-  `ea825a72f80904012ea396b7120d3a9398a58c826063e51d205201dc544839c0`.
+## Evidence and limits
 
-Both diagnostics are not qualification campaigns and do not qualify any
-runtime. Run 03 found no run-labelled containers or probe cgroups after cleanup.
-The local regression test does not create Docker resources, so actual
-container/job-cgroup regression coverage remains unresolved and Issue #2 must
-remain open unless separately satisfied.
+The original report `regression-run-e11f05eb2c0c.json` remains at SHA-256
+`fe3b2f03d34304f5eebebb16cdebcf0e4e588708e2f70c0d787aad8932c8fc9c`.
+Its PASS is the original runner's classification, not independent acceptance.
+See the correction for cgroup, transfer and cleanup evidence gaps. Run `86a56976e3cf` executed once, with verified inputs/image, and stopped
+INCONCLUSIVE: target cgroup scope found but membership validation failed before
+any output was consumed or stop issued. The exact cause is unknown; raw membership
+values were not retained. Startup timing is only a hypothesis. The target
+container, exact scope, imported image and temporary files were subsequently
+verified absent. Sources, report, operation log and hashes are preserved under
+`docs/investigations/issue-2/run-86a56976e3cf/`. That identity was not reused;
+a subsequent separately authorized run is recorded below.
+Historical m0-001 through m0-004 remain immutable, and
+m0-004 remains INCONCLUSIVE. Source changes do not retroactively repair evidence.
 
-## Established facts and uncertainty
+## Checks and next action
 
-Across corrected Docker runs, the same profile/image/runtime had stop time out
-at the ten-second deadline with output draining paused, while concurrent output
-draining allowed stop to return in under 0.08 seconds. The paused run's separate
-inspect request also timed out at its one-second bound; after output draining
-resumed, the container state was observable and exited. This establishes the
-harness-level cause: synchronous stop waiting while attached output is not
-drained couples control completion to a blocked attach stream. The internal
-Docker daemon mechanism remains unknown. This is not evidence of an isolation
-failure. The fix now starts stop asynchronously while the same selector keeps
-draining both streams. Retention remains 1 MiB combined, truncation is recorded,
-and the stop deadline remains ten seconds.
+19 local Python tests passed after the local readiness follow-up. The in-memory leader-only termination mutation
+was rejected by the new descendant test. Python compilation, Go tests/vet, native
+build, Linux probe cross-build/vet, formatting, diff checks and all four historical
+manifest verifications passed. Cross-builds do not prove Linux execution. The Linux-specific test subreaper path is unexecuted on macOS.
 
-Historical evidence remains immutable. m0-004 stays **INCONCLUSIVE**; M0 stays
-**UNQUALIFIED**. No new qualification campaign was run. Issue #3 remains
-separate.
+Publication is authorized for this branch and these fixes/evidence only.
+The second explicitly authorized rerun e8a097595a56 passed. Record:
+`docs/investigations/issue-2/run-e8a097595a56/README.md`.
+It observed 8 MiB read, 1 MiB retained/truncated, stop exit zero in 0.118 seconds,
+live populated target scope/PID 11977, exact scope absence after cleanup and no
+run containers. Transfer hashes and image/file/result cleanup are preserved.
+Result SHA-256: e5c671e7be0c48bc220cf3186eaacb0e1eafe948fd99ef2bdadca5488b781067.
+The completed first run remains INCONCLUSIVE. No remote cleanup is outstanding.
+Next: verify the authorized push updates PR #7 to the fix/evidence commit,
+then perform human review. Do not merge or close issues on the owner's behalf. Human merge remains separate. No further runtime run is needed
+for this request or authorized implicitly by this result.
 
-On session resumption, the checkout was already on
-`fix/1-output-backpressure`; three untracked artifacts existed but were absent
-from the committed handoff: `tools/m0probe/reproduce_backpressure.py`,
-`docs/investigations/issue-1/local-pipe.py`, and
-`docs/investigations/issue-1/local-pipe.json`. Their provenance is
-pre-existing/unverified. They were inspected as requested, preserved, and their
-existing JSON was not accepted as evidence. An additional untracked
-`independent-local-pipe.json` was also found without provenance in the committed
-handoff; it remains untrusted and preserved. A separate local-pipe experiment
-was independently run; it demonstrates local OS-pipe backpressure only.
-
-The remote-transfer exception is permanent: `scp -p` mistakenly targeted
-`adam@192.168.50.99:/tmp/` with generic filenames rather than checked unique
-destinations. Whether those three paths had earlier contents cannot now be
-resolved; do not infer they were empty. The current transferred files were
-removed only after exact hash checks and operator authorization, and those exact
-paths were verified absent. On the latest resumption check they remained absent;
-no cleanup was attempted then. This incident is not evidence about Docker.
-Complete chronology is preserved in the investigation README.
-
-## Exact next actions
-
-1. Issue #2 remains open: its real Docker-backed regression must still verify
-   output-flooding child/grandchild cleanup and no residual campaign
-   container/job cgroup under the repaired harness. Do not turn that work into a
-   qualification campaign.
-2. Human review of [PR #6](https://github.com/admbahm/DryDock/pull/6) is the next
-   consequential action. Do not merge or approve it on the owner's behalf.
-
-Do not use `tools/m0probe/reproduce_backpressure.py` unchanged, change the
-ten-second deadline or 1 MiB output cap, run m0-005, start M1, use credentials,
-modify historical evidence, or push to `main`. The initial wrong generic `/tmp`
-transfer must never be represented as though its unique-name precheck succeeded.
-
-## Resume checks
-
-```sh
-git status --short --branch
-git log -1 --format='%H %s'
-git remote -v
-python3 -m unittest discover -s tools/m0probe -p 'test_*.py'
-go test ./...
-go vet ./...
-```
-
-The expected eventual branch push is authorized only for the Issue #1
-development branch. Do not change GitHub administration or merge the PR.
+Expected tree after publication: tracked changes committed, with only the four
+pre-existing investigation artifacts below left untracked. Preserve the four pre-existing provenance-unverified files:
+`docs/investigations/issue-1/independent-local-pipe.json`, `local-pipe.json`,
+`local-pipe.py`, and `tools/m0probe/reproduce_backpressure.py`. Do not stage them.
+The original Issue #1 transfer incident remains recorded in its investigation
+README and is not resolved by these changes.
