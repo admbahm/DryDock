@@ -183,5 +183,7 @@ Issue #2's real container/job-cgroup regression acceptance remains open.
 No M0 qualification campaign or M1 implementation was run. Full Go/Python and
 evidence-integrity checks are complete. Final diff review and commit
 `2867b40` (`fix: prevent output backpressure during probe termination`) are
-complete. Branch push and PR remain to be completed under the approved Issue #1
-workflow.
+complete. Branch `fix/1-output-backpressure` was pushed and verified at
+`1c56111a04b014ea151fed153a8f64cf2f224f2c`. PR [#6](https://github.com/admbahm/DryDock/pull/6)
+is open against `main`, closes #1, and references #2 without closing it. The
+next consequential action is human review; no merge or approval was performed.

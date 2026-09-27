@@ -7,6 +7,10 @@ m0-005, begin M1, or start another qualification campaign. The current branch is
 `fix/1-output-backpressure`, based on published `main` at
 `fe26751691fe502c33b22ebd864296ade542dc38`. The Issue #1 implementation commit
 is `2867b40` (`fix: prevent output backpressure during probe termination`).
+Before this handoff-only update, PR [#6](https://github.com/admbahm/DryDock/pull/6)
+was open against `main` with verified head
+`1c56111a04b014ea151fed153a8f64cf2f224f2c`. Verify the latest PR/branch SHA
+with Git before any further work.
 The working tree is not clean because four provenance-unverified artifacts are
 preserved and unstaged; inspect `git status` before continuing.
 
@@ -82,8 +86,8 @@ Complete chronology is preserved in the investigation README.
    output-flooding child/grandchild cleanup and no residual campaign
    container/job cgroup under the repaired harness. Do not turn that work into a
    qualification campaign.
-2. Push only `fix/1-output-backpressure` and open a PR against `main` as
-   authorized. Do not merge or approve it.
+2. Human review of [PR #6](https://github.com/admbahm/DryDock/pull/6) is the next
+   consequential action. Do not merge or approve it on the owner's behalf.
 
 Do not use `tools/m0probe/reproduce_backpressure.py` unchanged, change the
 ten-second deadline or 1 MiB output cap, run m0-005, start M1, use credentials,
