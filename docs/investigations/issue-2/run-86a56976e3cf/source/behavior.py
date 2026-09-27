@@ -34,7 +34,7 @@ def drain_until_complete(sel, case, started, base, name, cid, captured, total, c
                          output_limit=OUTPUT_LIMIT, case_deadline=CASE_DEADLINE_SECONDS,
                          stop_deadline=STOP_DEADLINE_SECONDS, diagnostics=None, on_cgroup=None):
  """Drain attached streams while a bounded Docker stop request is in flight."""
- reason=None;stop_proc=None;stop_started=None;cancel_seconds=None;stop_exit_code=None;stop_completed=False;cgroup=None;cgroup_observed=False
+ reason=None;stop_proc=None;stop_started=None;cancel_seconds=None;stop_exit_code=None;stop_completed=False;cgroup=None
  command=base+['stop','--time','2',name]
  try:
   while sel.get_map() or (stop_proc is not None and stop_proc.poll() is None):
@@ -47,10 +47,7 @@ def drain_until_complete(sel, case, started, base, name, cid, captured, total, c
     matches=list(root.glob('**/docker-'+cid+'.scope'))
     if matches:
      cgroup=matches[0]
-   # Observe readiness only after actual output, while continuing to drain.
-   # A scope can be created before a process joins it. Pending is never PASS.
-   if cgroup is not None and on_cgroup is not None and not cgroup_observed and total['seen']>0:
-    cgroup_observed=on_cgroup(cgroup) is not False
+     if on_cgroup is not None:on_cgroup(cgroup)
    if stop_proc is not None and stop_proc.poll() is None and now-stop_started>=stop_deadline:
     try:os.killpg(stop_proc.pid, signal.SIGKILL)
     except ProcessLookupError:pass

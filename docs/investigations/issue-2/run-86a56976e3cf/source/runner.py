@@ -48,19 +48,10 @@ def observe_cgroup(path, cid):
     path = pathlib.Path(path).resolve(strict=True)
     if not path.is_relative_to(root) or path.name != f'docker-{cid}.scope':
         raise RuntimeError('cgroup path is not the target container scope')
-    procs_text = (path / 'cgroup.procs').read_text()
-    events_text = (path / 'cgroup.events').read_text()
-    try:
-        events = dict(line.split() for line in events_text.splitlines())
-    except ValueError as exc:
-        raise RuntimeError(f'malformed cgroup.events: {events_text!r}') from exc
-    if events.get('populated') not in ('0', '1'):
-        raise RuntimeError(f'missing or invalid populated field: {events_text!r}')
-    # populated includes descendants; direct cgroup.procs can legitimately be empty.
-    # https://www.kernel.org/doc/html/v6.9/admin-guide/cgroup-v2.html
-    return {'host_path': str(path), 'cgroup_procs': procs_text.split(),
-            'cgroup_procs_raw': procs_text, 'cgroup_events_raw': events_text,
-            'observed_live': events['populated'] == '1'}
+    procs = (path / 'cgroup.procs').read_text().split()
+    if not procs or not all(pid.isdecimal() and int(pid) > 0 for pid in procs):
+        raise RuntimeError('target cgroup has no observable live processes')
+    return {'host_path': str(path), 'cgroup_procs': procs, 'observed_live': True}
 
 
 def cgroup_current_state(snapshot):
@@ -125,15 +116,8 @@ def run_regression(base, template, image, run_id):
 
         def record_cgroup(path):
             nonlocal probe_cgroup
-            observation = observe_cgroup(path, cid)
-            row['cgroup_observation_attempts'] = row.get('cgroup_observation_attempts', 0) + 1
-            row['cgroup_last_observation'] = observation
-            row['cgroup_observed_after_output_bytes'] = total['seen']
-            if observation['observed_live']:
-                probe_cgroup = observation
-                row['probe_cgroup_live'] = observation
-                return True
-            return False
+            probe_cgroup = observe_cgroup(path, cid)
+            row['probe_cgroup_live'] = probe_cgroup
 
         outcome, code = drain_attached(
             base + ['start', '--attach', name], 'output', started, base, name, cid,
