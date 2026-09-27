@@ -1,0 +1,26 @@
+{
+  "command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "-c",
+    "import os\nblock=b'x'*65536\nremaining=8*1024*1024\nwhile remaining:\n n=os.write(1,block[:min(len(block),remaining)])\n remaining-=n\n"
+  ],
+  "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "python": "3.14.6 (main, Jun 10 2026, 10:03:53) [Clang 21.0.0 (clang-2100.0.123.102)]",
+  "retained_limit_bytes": 1048576,
+  "child_output_bytes_expected": 8388608,
+  "experiment_deadline_seconds": 5.0,
+  "exit_code": 0,
+  "wait_without_drain_timed_out": true,
+  "bytes_read_before_resume": 1114112,
+  "bytes_read_after_resume": 7274496,
+  "retained_bytes": 1048576,
+  "truncated": true,
+  "retained_limit_respected": true,
+  "stderr_bytes": 0,
+  "reader_errors": [],
+  "reader_joined": true,
+  "duration_seconds": 0.2871843750035623,
+  "cleanup": "child reaped; pipes closed",
+  "status": "PASS",
+  "exit_status": 0
+}
