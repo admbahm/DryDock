@@ -185,5 +185,29 @@ evidence-integrity checks are complete. Final diff review and commit
 `2867b40` (`fix: prevent output backpressure during probe termination`) are
 complete. Branch `fix/1-output-backpressure` was pushed and verified at
 `1c56111a04b014ea151fed153a8f64cf2f224f2c`. PR [#6](https://github.com/admbahm/DryDock/pull/6)
-is open against `main`, closes #1, and references #2 without closing it. The
-next consequential action is human review; no merge or approval was performed.
+was merged into `main` after independent review.
+
+## Issue #2: deterministic output-flood cancellation regressions
+
+Completed local deterministic regression test coverage in `tools/m0probe/test_behavior.py`:
+- Stderr-only flooding: stderr alone crosses the threshold, triggers bounded stop,
+  caps retention at 1 MiB, records truncation, and reaps the worker process tree.
+- Stop non-zero exit: raises RuntimeError, fails closed, and reaps processes.
+- Stop timeout: stop process hanging past deadline is SIGKILL'd via its process
+  group, raises TimeoutExpired, and reaps worker processes (using injectable
+  `stop_deadline` parameter while preserving the production 10s default).
+- Case deadline: overall deadline expiration raises TimeoutError and reaps processes.
+- Full local suite: 9 Python tests pass in 3.4s.
+
+Executed authorized, bounded Docker-backed regression on `drydock-exec` (192.168.50.99)
+under unprivileged user `adam` (UID 1000) using synthetic rootfs and profile:
+- Run ID: `e11f05eb2c0c`.
+- Result: **PASS** (`regression-run-e11f05eb2c0c.json`, SHA-256
+  `fe3b2f03d34304f5eebebb16cdebcf0e4e588708e2f70c0d787aad8932c8fc9c`).
+- Observed: stop duration was 0.116s (< 10s bound), 8 MiB seen, 1 MiB retained (cap
+  respected), truncation recorded, exit code 2, probe cgroup observed live at threshold.
+- Cleanup: container removed via `docker rm --force`, 0 containers with run label remain,
+  job cgroup scope absent, all transferred remote files verified and removed, imported
+  image removed, post-cleanup checks confirmed 0 residual containers, images, or cgroups.
+- Historical evidence unchanged; all 4 manifests verified.
+- This is not a qualification campaign; M0 remains UNQUALIFIED; m0-004 remains INCONCLUSIVE.

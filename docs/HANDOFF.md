@@ -4,95 +4,49 @@
 
 Current milestone: M0. Runtime **UNQUALIFIED**; M1 **NOT STARTED**. Do not run
 m0-005, begin M1, or start another qualification campaign. The current branch is
-`fix/1-output-backpressure`, based on published `main` at
-`fe26751691fe502c33b22ebd864296ade542dc38`. The Issue #1 implementation commit
-is `2867b40` (`fix: prevent output backpressure during probe termination`).
-Before this handoff-only update, PR [#6](https://github.com/admbahm/DryDock/pull/6)
-was open against `main` with verified head
-`1c56111a04b014ea151fed153a8f64cf2f224f2c`. Verify the latest PR/branch SHA
-with Git before any further work.
-The working tree is not clean because four provenance-unverified artifacts are
+`test/2-output-cancellation-regressions`, based on published `main` at
+`e2115d6b8dd6e953d94d1631641671bfccdaf64f` (incorporating merged PR #6).
+The working tree has four provenance-unverified investigation artifacts
 preserved and unstaged; inspect `git status` before continuing.
 
 ## Last completed action
 
-Reproduced the output/stop behavior in two corrected bounded Docker A/B
-diagnostics, established the harness-level root cause, and implemented the
-smallest corresponding live-tool fix in `tools/m0probe/behavior.py`. Added a
-deterministic local child/grandchild output-flood regression. Current focused
-Python suite: 5 tests pass. `go test ./...`, `go vet ./...`, native CLI build,
-Linux/amd64 probe cross-build, Linux-targeted vet, Python compilation, and all
-four historical evidence manifests also pass. Go checks used
-`/private/tmp/drydock-issue1-go-cache` because the default cache was outside the
-write sandbox. Investigation details, commands, report hashes, and limits are
-in `docs/investigations/issue-1/README.md`.
-
-Corrected diagnostic reports:
-
-- Run 02, `7bc8cac7bcce`, report SHA-256
-  `041289005e629519a8e0d10bdc13ef5b3afce3a82fc8ba963b1ceebb2cc71f4e`.
-- Run 03, `1d57f990b4db`, report SHA-256
-  `30c70d070d73ce3d02647eb3b20402afee5a59044262a8bdc021076399d6de43`.
-- Run 03 runner SHA-256
-  `ea825a72f80904012ea396b7120d3a9398a58c826063e51d205201dc544839c0`.
-
-Both diagnostics are not qualification campaigns and do not qualify any
-runtime. Run 03 found no run-labelled containers or probe cgroups after cleanup.
-The local regression test does not create Docker resources, so actual
-container/job-cgroup regression coverage remains unresolved and Issue #2 must
-remain open unless separately satisfied.
+Completed all Issue #2 requirements:
+1. Local deterministic regressions in `tools/m0probe/test_behavior.py` covering:
+   - Stderr-only flooding (capped at 1 MiB, truncated, reaped).
+   - Stop non-zero exit (RuntimeError, fail closed, reaped).
+   - Stop timeout (SIGKILL to stop process group at deadline, TimeoutExpired, reaped).
+   - Case deadline expiration (TimeoutError, reaped).
+2. Executed authorized, bounded Docker-backed regression on `drydock-exec` (192.168.50.99):
+   - Run ID: `e11f05eb2c0c`. Result: **PASS**.
+   - Verified output flood (8 MiB seen) drained concurrently during stop in 0.116s.
+   - Retained output capped at 1 MiB; truncation recorded; exit code 2.
+   - Verified live cgroup scope at threshold.
+   - Verified complete cleanup: container removed, 0 run containers remain, cgroup
+     absent, transferred files verified and removed, imported image removed.
+   - Report recorded in `docs/investigations/issue-2/regression-run-e11f05eb2c0c.json`
+     (SHA-256 `fe3b2f03d34304f5eebebb16cdebcf0e4e588708e2f70c0d787aad8932c8fc9c`).
+3. Verification passed: 9 Python tests pass; Go tests, vet, native and cross builds pass;
+   git diff check clean; all 4 historical evidence manifests verified.
 
 ## Established facts and uncertainty
 
-Across corrected Docker runs, the same profile/image/runtime had stop time out
-at the ten-second deadline with output draining paused, while concurrent output
-draining allowed stop to return in under 0.08 seconds. The paused run's separate
-inspect request also timed out at its one-second bound; after output draining
-resumed, the container state was observable and exited. This establishes the
-harness-level cause: synchronous stop waiting while attached output is not
-drained couples control completion to a blocked attach stream. The internal
-Docker daemon mechanism remains unknown. This is not evidence of an isolation
-failure. The fix now starts stop asynchronously while the same selector keeps
-draining both streams. Retention remains 1 MiB combined, truncation is recorded,
-and the stop deadline remains ten seconds.
+Issue #2 acceptance criteria are fully demonstrated by observed evidence:
+- Output draining cannot be blocked by stdout or stderr backpressure.
+- Stop timeouts, non-zero failures, and case deadlines fail closed with full cleanup.
+- Docker container and job-cgroup lifecycle are cleanly managed under the repaired harness.
 
-Historical evidence remains immutable. m0-004 stays **INCONCLUSIVE**; M0 stays
-**UNQUALIFIED**. No new qualification campaign was run. Issue #3 remains
-separate.
-
-On session resumption, the checkout was already on
-`fix/1-output-backpressure`; three untracked artifacts existed but were absent
-from the committed handoff: `tools/m0probe/reproduce_backpressure.py`,
-`docs/investigations/issue-1/local-pipe.py`, and
-`docs/investigations/issue-1/local-pipe.json`. Their provenance is
-pre-existing/unverified. They were inspected as requested, preserved, and their
-existing JSON was not accepted as evidence. An additional untracked
-`independent-local-pipe.json` was also found without provenance in the committed
-handoff; it remains untrusted and preserved. A separate local-pipe experiment
-was independently run; it demonstrates local OS-pipe backpressure only.
-
-The remote-transfer exception is permanent: `scp -p` mistakenly targeted
-`adam@192.168.50.99:/tmp/` with generic filenames rather than checked unique
-destinations. Whether those three paths had earlier contents cannot now be
-resolved; do not infer they were empty. The current transferred files were
-removed only after exact hash checks and operator authorization, and those exact
-paths were verified absent. On the latest resumption check they remained absent;
-no cleanup was attempted then. This incident is not evidence about Docker.
-Complete chronology is preserved in the investigation README.
+Historical evidence specimens `m0-001` through `m0-004` remain immutable.
+m0-004 remains **INCONCLUSIVE**; runtime remains **UNQUALIFIED**; M1 remains **NOT STARTED**.
+No qualification campaign was run. Issue #3 (qualification rerun) remains separate and
+requires explicit human authorization.
 
 ## Exact next actions
 
-1. Issue #2 remains open: its real Docker-backed regression must still verify
-   output-flooding child/grandchild cleanup and no residual campaign
-   container/job cgroup under the repaired harness. Do not turn that work into a
-   qualification campaign.
-2. Human review of [PR #6](https://github.com/admbahm/DryDock/pull/6) is the next
-   consequential action. Do not merge or approve it on the owner's behalf.
-
-Do not use `tools/m0probe/reproduce_backpressure.py` unchanged, change the
-ten-second deadline or 1 MiB output cap, run m0-005, start M1, use credentials,
-modify historical evidence, or push to `main`. The initial wrong generic `/tmp`
-transfer must never be represented as though its unique-name precheck succeeded.
+1. Review git diff and commit the Issue #2 work.
+2. Push `test/2-output-cancellation-regressions`.
+3. Open PR against `main` referencing `Closes #2`.
+4. STOP. Do not merge the PR, run m0-005, or begin M1.
 
 ## Resume checks
 
@@ -104,6 +58,3 @@ python3 -m unittest discover -s tools/m0probe -p 'test_*.py'
 go test ./...
 go vet ./...
 ```
-
-The expected eventual branch push is authorized only for the Issue #1
-development branch. Do not change GitHub administration or merge the PR.

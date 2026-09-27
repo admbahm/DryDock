@@ -31,7 +31,8 @@ def evaluate(case, code, output, state):
  return False
 
 def drain_until_complete(sel, case, started, base, name, cid, captured, total, commands,
-                         output_limit=OUTPUT_LIMIT, case_deadline=CASE_DEADLINE_SECONDS):
+                         output_limit=OUTPUT_LIMIT, case_deadline=CASE_DEADLINE_SECONDS,
+                         stop_deadline=STOP_DEADLINE_SECONDS):
  """Drain attached streams while a bounded Docker stop request is in flight."""
  reason=None;stop_proc=None;stop_started=None;cancel_seconds=None;stop_exit_code=None;stop_completed=False;cgroup=None
  command=base+['stop','--time','2',name]
@@ -45,12 +46,12 @@ def drain_until_complete(sel, case, started, base, name, cid, captured, total, c
     root=pathlib.Path('/sys/fs/cgroup/user.slice')/f'user-{uid}.slice'/f'user@{uid}.service'
     matches=list(root.glob('**/docker-'+cid+'.scope'))
     if matches:cgroup=matches[0]
-   if stop_proc is not None and stop_proc.poll() is None and now-stop_started>=STOP_DEADLINE_SECONDS:
+   if stop_proc is not None and stop_proc.poll() is None and now-stop_started>=stop_deadline:
     try:os.killpg(stop_proc.pid, signal.SIGKILL)
     except ProcessLookupError:pass
     try:stop_proc.wait(timeout=2)
     except subprocess.TimeoutExpired:raise RuntimeError('Docker stop client survived SIGKILL')
-    raise subprocess.TimeoutExpired(command, STOP_DEADLINE_SECONDS)
+    raise subprocess.TimeoutExpired(command, stop_deadline)
    if stop_proc is not None and not stop_completed and stop_proc.poll() is not None:
     cancel_seconds=time.monotonic()-stop_started
     stop_exit_code=stop_proc.returncode
@@ -67,7 +68,7 @@ def drain_until_complete(sel, case, started, base, name, cid, captured, total, c
    if sel.get_map():
     wait_for=.05
     if stop_proc is not None and stop_proc.poll() is None:
-     wait_for=min(wait_for,max(0,stop_started+STOP_DEADLINE_SECONDS-time.monotonic()))
+     wait_for=min(wait_for,max(0,stop_started+stop_deadline-time.monotonic()))
     wait_for=min(wait_for,max(0,started+case_deadline-time.monotonic()))
     ready=sel.select(wait_for)
     for key,_ in ready:
@@ -79,7 +80,7 @@ def drain_until_complete(sel, case, started, base, name, cid, captured, total, c
      captured[key.data].extend(data[:remaining])
      total['seen']+=len(data)
    elif stop_proc is not None and stop_proc.poll() is None:
-    wait_for=min(.05,max(0,stop_started+STOP_DEADLINE_SECONDS-time.monotonic()))
+    wait_for=min(.05,max(0,stop_started+stop_deadline-time.monotonic()))
     wait_for=min(wait_for,max(0,started+case_deadline-time.monotonic()))
     time.sleep(wait_for)
   if stop_proc is not None:
