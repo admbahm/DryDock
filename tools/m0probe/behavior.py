@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """Finite, synthetic M0 probes. No task dispatch and no sudo."""
-import argparse, hashlib, json, os, pathlib, selectors, socket, subprocess, threading, time
+import argparse, hashlib, json, os, pathlib, selectors, signal, socket, subprocess, threading, time
+
+OUTPUT_LIMIT = 1 << 20
+STOP_DEADLINE_SECONDS = 10
+CASE_DEADLINE_SECONDS = 42
 
 def counters(text):
  return {k:int(v) for k,v in (line.split() for line in text.splitlines())}
@@ -25,6 +29,74 @@ def evaluate(case, code, output, state):
  if case=='network':
   return all(not x['connected'] if x['network']=='tcp' else x.get('reply_bytes',0)==0 and (not x['connected'] or x.get('read_error')!='<nil>') for x in obj)
  return False
+
+def drain_until_complete(sel, case, started, base, name, cid, captured, total, commands,
+                         output_limit=OUTPUT_LIMIT, case_deadline=CASE_DEADLINE_SECONDS):
+ """Drain attached streams while a bounded Docker stop request is in flight."""
+ reason=None;stop_proc=None;stop_started=None;cancel_seconds=None;stop_exit_code=None;stop_completed=False;cgroup=None
+ command=base+['stop','--time','2',name]
+ try:
+  while sel.get_map() or (stop_proc is not None and stop_proc.poll() is None):
+   now=time.monotonic()
+   if now-started>case_deadline:
+    raise TimeoutError('probe termination exceeded the case deadline')
+   if cgroup is None:
+    uid=os.getuid()
+    root=pathlib.Path('/sys/fs/cgroup/user.slice')/f'user-{uid}.slice'/f'user@{uid}.service'
+    matches=list(root.glob('**/docker-'+cid+'.scope'))
+    if matches:cgroup=matches[0]
+   if stop_proc is not None and stop_proc.poll() is None and now-stop_started>=STOP_DEADLINE_SECONDS:
+    try:os.killpg(stop_proc.pid, signal.SIGKILL)
+    except ProcessLookupError:pass
+    try:stop_proc.wait(timeout=2)
+    except subprocess.TimeoutExpired:raise RuntimeError('Docker stop client survived SIGKILL')
+    raise subprocess.TimeoutExpired(command, STOP_DEADLINE_SECONDS)
+   if stop_proc is not None and not stop_completed and stop_proc.poll() is not None:
+    cancel_seconds=time.monotonic()-stop_started
+    stop_exit_code=stop_proc.returncode
+    stop_completed=True
+    if stop_exit_code:
+     raise RuntimeError('Docker stop exited '+str(stop_exit_code))
+   if reason is None and ((case=='tree' and now-started>=2) or now-started>=30 or
+                          (case=='output' and total['seen']>output_limit)):
+    reason='cancel' if case=='tree' else ('output_limit' if case=='output' and total['seen']>output_limit else 'deadline')
+    commands.append(command)
+    stop_started=time.monotonic()
+    stop_proc=subprocess.Popen(command,stdout=subprocess.DEVNULL,
+                               stderr=subprocess.DEVNULL,start_new_session=True)
+   if sel.get_map():
+    wait_for=.05
+    if stop_proc is not None and stop_proc.poll() is None:
+     wait_for=min(wait_for,max(0,stop_started+STOP_DEADLINE_SECONDS-time.monotonic()))
+    wait_for=min(wait_for,max(0,started+case_deadline-time.monotonic()))
+    ready=sel.select(wait_for)
+    for key,_ in ready:
+     data=os.read(key.fileobj.fileno(),65536)
+     if not data:
+      sel.unregister(key.fileobj)
+      continue
+     remaining=max(0,output_limit-sum(len(value) for value in captured.values()))
+     captured[key.data].extend(data[:remaining])
+     total['seen']+=len(data)
+   elif stop_proc is not None and stop_proc.poll() is None:
+    wait_for=min(.05,max(0,stop_started+STOP_DEADLINE_SECONDS-time.monotonic()))
+    wait_for=min(wait_for,max(0,started+case_deadline-time.monotonic()))
+    time.sleep(wait_for)
+  if stop_proc is not None:
+   stop_exit_code=stop_proc.wait(timeout=1)
+   if not stop_completed:cancel_seconds=time.monotonic()-stop_started
+   if stop_exit_code:
+    raise RuntimeError('Docker stop exited '+str(stop_exit_code))
+  retained=sum(len(value) for value in captured.values())
+  return {'termination_reason':reason,'termination_seconds':cancel_seconds,
+          'stop_exit_code':stop_exit_code,'cgroup_path':str(cgroup) if cgroup else None,
+          'retained_bytes':retained,'truncated':total['seen']>retained}
+ finally:
+  if stop_proc is not None and stop_proc.poll() is None:
+   try:os.killpg(stop_proc.pid,signal.SIGKILL)
+   except ProcessLookupError:pass
+   try:stop_proc.wait(timeout=2)
+   except subprocess.TimeoutExpired:pass
 
 def main():
  p=argparse.ArgumentParser();p.add_argument('--inventory',required=True);p.add_argument('--output',required=True);a=p.parse_args()
@@ -70,32 +142,35 @@ def main():
    cid=call(args+extras).strip();owned=name
    inspect=json.loads(call(['inspect',name]))[0]
    (out/(case+'.inspect-before.json')).write_text(json.dumps(inspect,indent=2)+'\n')
-   start=time.monotonic();proc=subprocess.Popen(base+['start','--attach',name],stdout=subprocess.PIPE,stderr=subprocess.PIPE,env={**os.environ,'DRYDOCK_SYNTHETIC_SECRET':'synthetic-not-for-container'})
+   start=time.monotonic();proc=subprocess.Popen(base+['start','--attach',name],stdout=subprocess.PIPE,stderr=subprocess.PIPE,env={**os.environ,'DRYDOCK_SYNTHETIC_SECRET':'synthetic-not-for-container'},start_new_session=True)
    commands.append(base+['start','--attach',name]);sel=selectors.DefaultSelector();sel.register(proc.stdout,selectors.EVENT_READ,'stdout');sel.register(proc.stderr,selectors.EVENT_READ,'stderr')
-   captured={'stdout':bytearray(),'stderr':bytearray()};total=0;reason=None;cancel_seconds=None;cgroup=None
-   while sel.get_map():
-    elapsed=time.monotonic()-start
-    if cgroup is None:
-     matches=list(pathlib.Path('/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service').glob('**/docker-'+cid+'.scope'))
-     if matches:cgroup=matches[0]
-    if reason is None and ((case=='tree' and elapsed>=2) or elapsed>=30 or total>1048576):
-     reason='cancel' if case=='tree' else ('output_limit' if total>1048576 else 'deadline')
-     t=time.monotonic();call(['stop','--time','2',name]);cancel_seconds=time.monotonic()-t
-    for key,_ in sel.select(.05):
-     data=os.read(key.fileobj.fileno(),65536)
-     if not data:sel.unregister(key.fileobj);continue
-     remaining=max(0,1048576-sum(len(x) for x in captured.values()))
-     captured[key.data].extend(data[:remaining]);total+=len(data)
-    if time.monotonic()-start>42:raise RuntimeError('termination deadline exceeded')
-   code=proc.wait(timeout=1);sel.close()
+   captured={'stdout':bytearray(),'stderr':bytearray()};total={'seen':0}
+   # Keep draining both attach streams while the existing bounded stop request
+   # is in flight; a synchronous stop wait can block the producer's pipe.
+   try:
+    outcome=drain_until_complete(sel,case,start,base,name,cid,captured,total,commands)
+   finally:
+    sel.close()
+    if proc.poll() is None:
+     try:os.killpg(proc.pid,signal.SIGTERM)
+     except ProcessLookupError:pass
+     try:proc.wait(timeout=2)
+     except subprocess.TimeoutExpired:
+      try:os.killpg(proc.pid,signal.SIGKILL)
+      except ProcessLookupError:pass
+      proc.wait(timeout=2)
+    for stream in (proc.stdout,proc.stderr):
+     if stream:stream.close()
+   reason=outcome['termination_reason'];cancel_seconds=outcome['termination_seconds'];cgroup=outcome['cgroup_path']
+   code=proc.wait(timeout=1)
    state=json.loads(call(['inspect',name]))[0]['State']
    for stream,data in captured.items():(out/(case+'.'+stream)).write_bytes(data)
-   row={'case':case,'exit_code':code,'state':state,'duration_seconds':time.monotonic()-start,'termination_reason':reason,'termination_seconds':cancel_seconds,'output_bytes_seen':total,'truncated':total>1048576,'cgroup_path':str(cgroup) if cgroup else None}
+   row={'case':case,'exit_code':code,'state':state,'duration_seconds':time.monotonic()-start,'termination_reason':reason,'termination_seconds':cancel_seconds,'stop_exit_code':outcome['stop_exit_code'],'stop_deadline_seconds':STOP_DEADLINE_SECONDS,'output_bytes_seen':total['seen'],'truncated':outcome['truncated'],'retained_bytes':outcome['retained_bytes'],'retained_limit':OUTPUT_LIMIT,'cgroup_path':str(cgroup) if cgroup else None}
    empty=cgroup is not None and (not cgroup.exists() or (cgroup/'cgroup.procs').read_text().strip()=='')
    row['cgroup_empty_or_removed']=empty
    passed=evaluate(case,code,captured['stdout'].decode(),state)
    if case=='tree':passed=passed and reason=='cancel' and cancel_seconds<=10 and empty
-   if case=='output':passed=passed and reason=='output_limit' and cancel_seconds<=10 and empty
+   if case=='output':passed=passed and reason=='output_limit' and cancel_seconds<=STOP_DEADLINE_SECONDS and empty
    if case=='network':
     row['host_receipts']=receipts.copy();passed=passed and not receipts
    if reason and case not in ('tree','output'):passed=False

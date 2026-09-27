@@ -49,7 +49,11 @@ Rootless daemon availability is not qualification. The exact user service and
 runtime versions are in m0-004. These records include host-specific prototype
 paths; they must not become a fixed deployment API.
 
-Runtime qualification is paused. Do not rerun `tools/m0probe/inventory.py` or
-`behavior.py` unchanged: they reuse m0-004 names and the output-draining defect
-is unresolved. Repair/test the harness separately before considering a new
-explicitly identified and authorized campaign. No M1 authorization is implied.
+Runtime qualification is paused. The live `tools/m0probe/behavior.py` now starts
+the bounded stop request asynchronously and keeps draining attached stdout and
+stderr; its local regression covers a bounded output flood and process-tree
+reaping. This does not demonstrate Docker container/job-cgroup cleanup for the
+repaired harness, and it does not qualify a runtime. Do not run the full
+`inventory.py` or `behavior.py` campaign as part of Issue #1. Any later M0
+campaign requires a new identity and separate authorization. No M1 authorization
+is implied.

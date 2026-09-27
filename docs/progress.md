@@ -142,3 +142,44 @@ Local checks passed: gofmt on live sources; go test ./...; go vet ./...; three
 Python evaluator tests; native CLI build; static Linux/amd64 probe cross-build;
 Linux-targeted probe vet. Evidence/artifact hashes and archived input tar hashes
 were reverified. These checks do not establish runtime qualification.
+
+## Issue #1: output/stop backpressure investigation and harness repair
+
+Two corrected diagnostic-only Docker A/B runs used the same imported synthetic
+probe image, archived profile, rootless Docker/runtime versions, and bounded
+output handling. In each run, the paused-drain case left `docker stop` pending
+for the unchanged ten-second deadline; releasing the output drain when stop
+started returned stop in 0.063 s and 0.076 s. The third run also observed a
+one-second `docker inspect` timeout while stop was pending. After drain resumed,
+the container state became observable as exited. Both modes retained at most
+1 MiB, recorded truncation, and found no run-labelled container or probe cgroup
+after cleanup. Reports and exact commands are preserved in
+`investigations/issue-1/README.md` and the run JSON files; neither run was a
+qualification campaign.
+
+Established: the live M0 harness synchronously waits for Docker stop at the
+output threshold without draining attached stdout/stderr. Repeating the A/B
+comparison with only drain resumption changed reproduces the timeout versus
+sub-0.08-second split. This establishes a harness-level coupling between the
+blocked attach stream and termination/control completion. It does not establish
+the Docker daemon's internal mechanism or an isolation failure. m0-004 remains
+INCONCLUSIVE and immutable; M0 remains UNQUALIFIED.
+
+Fixed locally in `tools/m0probe/behavior.py`: start the existing `docker stop
+--time 2` request asynchronously, continue draining both streams, retain no
+more than 1 MiB combined, record truncation, and enforce the same ten-second
+stop deadline. Added a deterministic local output-flood test with a child and
+grandchild; it verifies both are live before cancellation, the stop operation
+overlaps continued output, retention stays capped, truncation is reported, and
+both processes are reaped.
+Verification: `gofmt -l` reported no unformatted Go source; `go test ./...`,
+`go vet ./...`, native CLI build, Linux/amd64 probe cross-build, Linux-targeted
+vet, Python compilation, all 5 Python tests, and `git diff --check` passed. Go
+checks used `/private/tmp/drydock-issue1-go-cache` because the default cache was
+outside the write sandbox. All four historical evidence manifests verified.
+These local checks do not exercise Docker cleanup or prove runtime qualification.
+Issue #2's real container/job-cgroup regression acceptance remains open.
+
+No M0 qualification campaign or M1 implementation was run. Full Go/Python and
+evidence-integrity checks are complete. Final diff review, commit, branch push,
+and PR remain to be completed under the approved Issue #1 workflow.
