@@ -5,9 +5,10 @@
 Current milestone: M0. Runtime **UNQUALIFIED**; M1 **NOT STARTED**. Do not run
 m0-005, begin M1, or start another qualification campaign. The current branch is
 `fix/1-output-backpressure`, based on published `main` at
-`fe26751691fe502c33b22ebd864296ade542dc38`. There is no Issue #1 commit yet.
-The working tree contains a local harness repair, tests, and investigation
-records; inspect `git status` before continuing.
+`fe26751691fe502c33b22ebd864296ade542dc38`. The Issue #1 implementation commit
+is `2867b40` (`fix: prevent output backpressure during probe termination`).
+The working tree is not clean because four provenance-unverified artifacts are
+preserved and unstaged; inspect `git status` before continuing.
 
 ## Last completed action
 
@@ -77,16 +78,12 @@ Complete chronology is preserved in the investigation README.
 
 ## Exact next actions
 
-1. Review `git diff` and `git status`, and stage only the justified Issue #1
-   repair, tests, verified diagnostic records, and documentation. Keep the
-   pre-existing provenance-unverified files preserved but unstaged.
-2. Issue #2 remains open: its real Docker-backed regression must still verify
+1. Issue #2 remains open: its real Docker-backed regression must still verify
    output-flooding child/grandchild cleanup and no residual campaign
    container/job cgroup under the repaired harness. Do not turn that work into a
    qualification campaign.
-3. Recheck staged changes and historical evidence manifests, commit the
-   coherent Issue #1 fix, push only `fix/1-output-backpressure`, and open a PR
-   against `main` as authorized. Do not merge or approve it.
+2. Push only `fix/1-output-backpressure` and open a PR against `main` as
+   authorized. Do not merge or approve it.
 
 Do not use `tools/m0probe/reproduce_backpressure.py` unchanged, change the
 ten-second deadline or 1 MiB output cap, run m0-005, start M1, use credentials,

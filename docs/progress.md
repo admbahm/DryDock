@@ -181,5 +181,7 @@ These local checks do not exercise Docker cleanup or prove runtime qualification
 Issue #2's real container/job-cgroup regression acceptance remains open.
 
 No M0 qualification campaign or M1 implementation was run. Full Go/Python and
-evidence-integrity checks are complete. Final diff review, commit, branch push,
-and PR remain to be completed under the approved Issue #1 workflow.
+evidence-integrity checks are complete. Final diff review and commit
+`2867b40` (`fix: prevent output backpressure during probe termination`) are
+complete. Branch push and PR remain to be completed under the approved Issue #1
+workflow.
