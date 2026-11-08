@@ -1,6 +1,7 @@
 # Agent guidance
 
-DryDock is a controlled, local-first environment for agentic engineering workers.
+DryDock’s long-term direction is a local-first, evidence-driven engineering
+orchestration platform. Current implementation remains a qualification prototype.
 Read `docs/HANDOFF.md`, `README.md`, `docs/decisions.md`, and the authoritative
 `docs/DryDock_PRD_v0.1.1.docx` before implementation decisions. Product requirements
 live in the PRD; observed results live in evidence. Surface conflicts explicitly.
@@ -31,8 +32,13 @@ M0 runtime is UNQUALIFIED. M1 is NOT STARTED and requires explicit authorization
 finishing M0 is not implicit permission to begin M1. Go is the implementation
 language; database/sql with modernc.org/sqlite is approved but not implemented.
 No live model/provider integration or TUI during M1. Defer router until there is
-more than one selectable worker. No distributed scheduling, plugin system or
-multi-agent collaboration. Keep the fake worker a bounded helper process.
+more than one selectable worker. Keep the fake worker a bounded helper process.
+The approved v0.1 scope excludes autonomous planning, parallel task execution and
+multi-agent collaboration; M1 remains single-task. The future controller-owned
+asynchronous multi-worker design in docs/orchestration-proposal.md is a proposed
+PRD amendment, not implementation authority. Distributed scheduling, plugin systems
+and worker-to-worker orchestration remain deferred. These scope restrictions do
+not forbid documenting future architecture; adoption requires owner approval.
 
 Linux is the supported execution platform. Rootless Docker is only a candidate.
 Reactor is a future inference host, not an assumed controller/execution host.
