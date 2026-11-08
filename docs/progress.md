@@ -237,3 +237,32 @@ correction records and both new bounded-run records to the existing Issue #2
 branch/PR #7. The four pre-existing Issue #1 investigation artifacts are excluded.
 Human review and any merge remain separate; no issue closure or qualification
 claim is authorized. Verify PR head against the resulting commit when resuming.
+
+## Product architecture review — 2026-11-08
+
+Local main at `11207542494ba52f31149ce4f93a9cb917eedda7` contains PR #7. Read-only
+GitHub inspection confirmed PRs #6/#7 merged and issues #1/#2 closed, superseding
+the preceding historical pending-publication/issue-status statements. Issues
+#3/#4/#5 remain open. Workflow closure does not change runtime qualification.
+
+The [orchestration proposal](orchestration-proposal.md) records the requested
+local-first engineering control plane, bounded asynchronous task graphs, provider
+contracts, scheduling, integration, independent regression verification, document
+workflows and evidence/authority boundaries. Its PRD amendment remains proposed;
+the original DOCX is unchanged. The [roadmap](roadmap.md) preserves M0–M4 and
+recommends later dependency-ordered increments. No issue was created or modified.
+
+This increment changes documentation only. No campaign, runtime implementation,
+provider integration, dependency installation or publication occurred. M0 remains
+UNQUALIFIED and M1 NOT STARTED; future design descriptions are not runtime evidence.
+
+## Validation of this documentation change
+
+Passed: Go tests/vet, 19 local Python unit tests, native CLI build, Linux/amd64
+probe cross-build and Linux-targeted probe vet. Live-source gofmt inspection
+reported no changes needed. Diff whitespace and local Markdown link checks passed.
+All four historical evidence manifests verified before and after edits; a separate
+SHA-256 inventory confirmed every historical specimen file unchanged. The PRD
+remains at SHA-256 `a80aba5eabc20f8a1f41c0b5d42cc0e62eabe95bf9989adc6d99b9c2c7c326e7`.
+These checks establish local build/test and document integrity only; no Docker
+campaign, Linux runtime execution or proposed orchestration behavior was tested.

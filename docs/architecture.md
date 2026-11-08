@@ -1,6 +1,10 @@
 # Architecture and trust boundaries
 
-This is the approved direction, not a claim of implemented task execution.
+This section records the approved v0.1 direction, not implemented task execution.
+DryDock owns the control plane; worker selection is only one internal responsibility.
+The [post-v0.1 proposal](orchestration-proposal.md) specifies durable task graphs,
+asynchronous workers, deterministic integration and aggregate regression inspection.
+It requires a PRD amendment and does not expand the scope approved below.
 Implemented today: CLI prerequisite reporting and experimental M0 probe tooling.
 
 ```text
@@ -40,3 +44,11 @@ Go and SQLite through database/sql are approved. CLI-first; no TUI yet. Stable
 worker boundaries should support later providers without changing authorization
 or inspection. Routing, retries, live models and escalation are not implemented.
 See the PRD and decisions for milestone scope. M1 needs explicit authorization.
+
+## Evolution without premature implementation
+
+Keep the current single-task loop and qualification gates intact. The future
+proposal extends controller state and artifact lineage before adding concurrency;
+provider-neutral interfaces do not imply runtime plugins or distributed scheduling.
+See the [roadmap](roadmap.md) for dependency-ordered, independently verifiable
+increments and the proposal’s explicit conflicts with the authoritative PRD.

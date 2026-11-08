@@ -36,3 +36,23 @@ implemented. Human acceptance recording remains deferred to M4.
 
 Current gate: M0 runtime UNQUALIFIED; M1 NOT STARTED and requires renewed explicit
 authorization. Public GitHub ownership/administration remains with admbahm.
+
+## Scope interpretation and proposed future decisions (2026-11-08)
+
+The decisions above remain approved. Single-active-task operation applies to the
+current v0.1 baseline, including M0/M1; absence of live providers and TUI is an M1
+restriction, not a permanent product prohibition. The PRD already schedules local
+models in M2, frontier escalation in M3, and TUI/acceptance recording in M4.
+
+The requested long-term direction makes DryDock the engineering orchestration
+control plane. [The proposed amendment](orchestration-proposal.md) would extend
+the PRD’s explicit exclusions of planning, parallel tasks and multi-agent
+collaboration with bounded controller-owned task graphs and asynchronous workers.
+These capabilities are proposed, not approved or implemented. Stable provider
+interfaces do not authorize a plugin system, peer orchestration or distributed
+scheduling. All existing trust boundaries and M0/M1 gates remain in force.
+
+Owner decisions outstanding: approve/version the amendment, settle its listed
+schema and policy choices, then separately authorize incremental implementation.
+The [roadmap](roadmap.md) recommends preserving M0–M4 before those increments;
+this review creates no new runtime, provider, campaign or publication authority.

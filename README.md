@@ -1,6 +1,11 @@
 # DryDock
 
-DryDock is a controlled environment for agentic workers.
+DryDock’s long-term direction is a local-first, evidence-driven engineering
+orchestration platform: the primary interface and control plane for engineering
+objectives, bounded workers, independent verification and human review.
+The [proposed orchestration architecture](docs/orchestration-proposal.md) describes
+asynchronous task graphs and integrated results; these extend the current PRD
+and require owner approval before implementation.
 
 The intended workflow starts with a bounded task contract executed by an
 untrusted worker. Candidate changes are independently inspected. Objective
@@ -23,8 +28,9 @@ escalation and a TUI are planned, not operational.
 All four qualification campaigns are INCONCLUSIVE. In m0-004, rootless Docker
 operated and several bounded-resource/synthetic-isolation probes produced
 positive evidence, but the output-flood stop command exceeded ten seconds.
-Harness output backpressure is a hypothesis, not an established Docker isolation
-failure. Cleanup found no campaign containers or job cgroups remaining.
+Later investigations established harness-level output/stop coupling and repaired
+it; they did not establish Docker’s internal mechanism or an isolation failure.
+Cleanup found no campaign containers or job cgroups remaining.
 
 ## Development
 
@@ -52,6 +58,8 @@ qualification. No automatic push, merge, release or deployment is part of DryDoc
 
 - [Authoritative PRD](docs/DryDock_PRD_v0.1.1.docx)
 - [Architecture and trust boundaries](docs/architecture.md)
+- [Roadmap and dependency-ordered backlog recommendation](docs/roadmap.md)
+- [Proposed post-v0.1 architecture and PRD amendment](docs/orchestration-proposal.md)
 - [Approved decisions](docs/decisions.md)
 - [Runtime qualification requirements](docs/runtime-qualification.md)
 - [Progress and evidence hashes](docs/progress.md)
